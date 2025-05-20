@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grafana URL Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-800 antialiased">
+    <!--==============  HEADER  ==============-->
+    <header class="bg-sky-700 text-white shadow">
+      <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-6">
+        <h1 class="text-2xl font-semibold tracking-wide">
+          Grafana URL Generator
+        </h1>
+      </div>
+    </header>
+
+    <!--==============  MAIN CONTENT  ==============-->
+    <main class="max-w-4xl mx-auto px-4 py-12 space-y-12">
+      <section class="space-y-6">
+        <h2 class="text-xl font-semibold text-sky-700">1. Generate Link</h2>
+        <div class="space-y-4">
+          <label class="block text-sm font-medium text-gray-700" for="tenantId">Tenant ID</label>
+          <input
+            id="tenantId"
+            type="text"
+            placeholder="e.g. ia5bd6b3ca881449fc8fea5824644eaff0"
+            class="w-full px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          <button
+            onclick="generateURL()"
+            class="bg-sky-600 text-white px-6 py-2 rounded hover:bg-sky-700 transition"
+          >
+            Generate URL
+          </button>
+        </div>
+        <div id="output" class="mt-6 space-y-2 hidden">
+          <label class="block text-sm font-medium text-gray-700">Resulting URL</label>
+          <a id="resultLink" href="#" target="_blank" class="text-blue-600 break-words underline"></a>
+        </div>
+      </section>
+    </main>
+
+    <!--==============  FOOTER  ==============-->
+    <footer class="bg-sky-700 text-white text-sm py-4">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        RapidIdentity Grafana Helper
+      </div>
+    </footer>
+
+    <!--==============  SCRIPT  ==============-->
+    <script>
+      function generateURL() {
+        const tenantId = document.getElementById("tenantId").value.trim();
+        if (!tenantId) return;
+
+        const base = "https://grafana.idautodevops.com/d/z1WCvAyMk/kubernetes-compute-resources-namespace-pods-pct-view";
+        const params = new URLSearchParams({
+          orgId: 1,
+          refresh: "10s",
+          "var-datasource": "ricloud-prd-us004",
+          "var-cluster": "",
+          "var-namespace": `idaas-${tenantId}`,
+          "var-interval": "4h"
+        });
+
+        const fullURL = `${base}?${params.toString()}`;
+        const output = document.getElementById("output");
+        const link = document.getElementById("resultLink");
+
+        link.href = fullURL;
+        link.textContent = fullURL;
+        output.classList.remove("hidden");
+      }
+    </script>
+  </body>
+</html>
